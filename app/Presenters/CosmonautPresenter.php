@@ -53,7 +53,7 @@ class CosmonautPresenter extends BasePresenter
 
 		$this->cosmonautFacade->saveCosmonaut($cosmonaut);
 
-		$response = new JsonResponse($cosmonaut);
+		$response = new JsonResponse($cosmonaut, JsonResponse::HTTP_201_CREATED);
 		$response->setContentLocation($this->getLinkGenerator()->link('Cosmonaut:default',  [
 			'id' => $cosmonaut->getId(),
 		]));
