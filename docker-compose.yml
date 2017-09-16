@@ -1,0 +1,14 @@
+version: '2.1'
+
+services:
+  app:
+    build: .
+    image: techfides/assignment
+    command: php -S 0.0.0.0:8080 -t www www/index.php
+    working_dir: ${PWD}
+    ports:
+      - 8080:8080
+    volumes:
+      - .:${PWD}
+  mysql:
+    image: mysql:5.7
