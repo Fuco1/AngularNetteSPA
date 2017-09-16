@@ -14,13 +14,20 @@
 
   <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
     <properties>
-      <property name="rootNamespaces" type="array" value="app => App"/>
+      <property name="rootNamespaces" type="array" value="app => App, tests/unit => Tests\App"/>
     </properties>
   </rule>
 
   <rule ref="SlevomatCodingStandard.TypeHints.TypeHintDeclaration">
     <properties>
       <property name="usefulAnnotations" type="array" value="@throws"/>
+      <property name="traversableTypeHints" type="array" value="\Doctrine\Common\Collections\Collection"/>
+    </properties>
+  </rule>
+
+  <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
+    <properties>
+      <property name="searchAnnotations" value="true"/>
     </properties>
   </rule>
 
