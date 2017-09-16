@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "husky": "^0.14.3"
+  },
+  "scripts": {
+    "precommit": "./vendor/bin/phing lint cs"
+  }
+}

@@ -1,5 +1,6 @@
 log/*
 temp/*
 vendor/*
+node_modules/*
 !.gitignore
 app/config/config.local.neon
