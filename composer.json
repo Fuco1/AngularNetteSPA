@@ -22,7 +22,8 @@
         "slevomat/coding-standard": "^4.0",
         "jakub-onderka/php-parallel-lint": "^0.9.2",
         "phing/phing": "^2.16",
-        "phpstan/phpstan-shim": "^0.8.4"
+        "phpstan/phpstan-shim": "^0.8.4",
+        "mockery/mockery": "^0.9.9"
     },
     "config": {
         "platform": {
