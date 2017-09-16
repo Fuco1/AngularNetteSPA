@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Cosmonatus" default="check">
+
+    <target name="check" depends="
+        lint,
+        cs,
+        tests,
+        phpstan
+    "/>
+
+    <target name="lint">
+        <exec
+                executable="vendor/bin/parallel-lint"
+                logoutput="true"
+                passthru="true"
+                checkreturn="true">
+            <arg path="app"/>
+            <arg path="tests"/>
+        </exec>
+    </target>
+
+    <target name="cs">
+        <exec
+                executable="vendor/bin/phpcs"
+                logoutput="true"
+                passthru="true"
+                checkreturn="true">
+            <arg value="--encoding=utf-8"/>
+            <arg value="--tab-width=4"/>
+            <arg value="--ignore=tests/bootstrap*.php"/>
+            <arg path="app"/>
+            <arg path="tests"/>
+        </exec>
+    </target>
+
+    <target name="cs-fix">
+        <exec
+                executable="vendor/bin/phpcbf"
+                logoutput="true"
+                passthru="true"
+                checkreturn="true">
+            <arg value="--encoding=utf-8"/>
+            <arg value="--tab-width=4"/>
+            <arg path="app"/>
+            <arg path="tests"/>
+        </exec>
+    </target>
+
+    <target name="tests">
+        <exec
+                executable="vendor/bin/tester"
+                logoutput="true"
+                passthru="true"
+                checkreturn="true">
+            <arg path="tests"/>
+        </exec>
+    </target>
+
+    <target name="phpstan">
+        <exec
+                executable="php"
+                logoutput="true"
+                passthru="true"
+                checkreturn="true">
+            <arg path="vendor/bin/phpstan"/>
+            <arg value="analyse"/>
+            <arg value="--no-progress"/>
+            <arg value="-c"/>
+            <arg path="tests/phpstan.neon"/>
+            <arg value="-l"/>
+            <arg value="7"/>
+            <arg path="app"/>
+        </exec>
+    </target>
+
+</project>

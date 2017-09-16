@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<ruleset name="AcmeProject">
+  <config name="installed_paths" value="../../slevomat/coding-standard"/>
+
+  <rule ref="SlevomatCodingStandard">
+    <exclude name="SlevomatCodingStandard.Namespaces.UseOnlyWhitelistedNamespaces"/>
+    <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameAfterKeyword"/>
+    <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameInAnnotation"/>
+    <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions"/>
+    <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalConstants"/>
+    <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions"/>
+  </rule>
+
+  <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
+    <properties>
+      <property name="rootNamespaces" type="array" value="app => App"/>
+    </properties>
+  </rule>
+
+</ruleset>
