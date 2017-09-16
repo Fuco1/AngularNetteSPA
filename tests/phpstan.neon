@@ -1,2 +1,2 @@
 parameters:
-    bootstrap: %rootDir%/../../../tests/bootstrap-phpstan.php
+    bootstrap: %rootDir%/../../../../tests/bootstrap-phpstan.php

@@ -62,7 +62,7 @@
                 logoutput="true"
                 passthru="true"
                 checkreturn="true">
-            <arg path="vendor/bin/phpstan"/>
+            <arg path="vendor/bin/phpstan.phar"/>
             <arg value="analyse"/>
             <arg value="--no-progress"/>
             <arg value="-c"/>
