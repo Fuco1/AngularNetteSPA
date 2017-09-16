@@ -8,6 +8,7 @@ use Nette\Application\IResponse;
 use Nette\Application\Request;
 use Nette\Http;
 use Nette\InvalidStateException;
+use Nette\Utils\Json;
 
 
 abstract class BasePresenter implements IPresenter
@@ -17,7 +18,7 @@ abstract class BasePresenter implements IPresenter
      * @inject
      * @var Http\Request
      */
-    private $httpRequest;
+    public $httpRequest;
 
 
     public function getHttpRequest(): Http\Request
@@ -25,14 +26,31 @@ abstract class BasePresenter implements IPresenter
         return $this->httpRequest;
     }
 
+    /**
+     * @throws BadRequestException
+     */
     public function run(Request $request): IResponse
     {
         $method = strtolower($request->getMethod());
+
+		$data = [];
+        if ($method !== 'get') {
+            $contentType = $this->httpRequest->getHeader('content-type');
+            if ($contentType !== 'application/json') {
+                throw new BadRequestException("Only application/json requests are accepted.");
+            }
+            $body = trim($this->httpRequest->getRawBody());
+			if (!empty($body)) {
+				$data = Json::decode($body, Json::FORCE_ARRAY);
+			}
+        }
+
+
         if (!method_exists($this, $method)) {
             throw new BadRequestException("Method '{$request->getMethod()}' not supported.");
         }
 
-        $response = $this->$method($request);
+        $response = $this->$method($request, $data);
         if (!$response instanceof IResponse) {
             throw new InvalidStateException("Presenter '{$request->getPresenterName()}' did not return any response for method '{$request->getMethod()}'.");
         }
