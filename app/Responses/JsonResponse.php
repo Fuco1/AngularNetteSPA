@@ -222,4 +222,9 @@ class JsonResponse implements Application\IResponse
 		$this->contentLocation = $contentLocation;
 	}
 
+
+	public function getContentLocation(): ?string {
+		return $this->contentLocation;
+	}
+
 }
