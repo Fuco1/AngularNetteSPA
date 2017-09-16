@@ -2,6 +2,8 @@
 
 namespace App\Presenters;
 
+use App\Responses\JsonResponse;
+use Nette;
 use Nette\Application\BadRequestException;
 use Nette\Application\IPresenter;
 use Nette\Application\IResponse;
@@ -21,16 +23,27 @@ abstract class BasePresenter implements IPresenter
     public $httpRequest;
 
 
-    public function getHttpRequest(): Http\Request
-    {
+	/**
+	 * @inject
+	 * @var Nette\Application\LinkGenerator
+	 */
+	public $linkGenerator;
+
+
+    public function getHttpRequest(): Http\Request {
         return $this->httpRequest;
     }
+
+
+	public function getLinkGenerator(): Nette\Application\LinkGenerator {
+		return $this->linkGenerator;
+	}
+
 
     /**
      * @throws BadRequestException
      */
-    public function run(Request $request): IResponse
-    {
+    public function run(Request $request): IResponse {
         $method = strtolower($request->getMethod());
 
 		$data = [];
@@ -56,5 +69,10 @@ abstract class BasePresenter implements IPresenter
         }
         return $response;
     }
+
+
+	protected function sendErrorResponse(string $message, int $code): JsonResponse {
+		return new JsonResponse(['error' => $message], $code);
+	}
 
 }

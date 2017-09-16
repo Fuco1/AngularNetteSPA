@@ -2,6 +2,7 @@
 
 namespace App\Responses;
 
+use JsonSerializable;
 use Nette\Application;
 use Nette\Http;
 use Nette\Utils\Json;
@@ -127,99 +128,98 @@ class JsonResponse implements Application\IResponse
 		510 => 'Not Extended',
 	];
 
-	/** @var mixed[] */
+
+	/** @var mixed[]|JsonSerializable */
 	private $data;
+
 
 	/** @var int */
 	private $code;
 
+
 	/** @var string */
 	private $contentType = 'application/json; charset=utf-8';
+
 
 	/** @var ?int */
 	private $expiration;
 
-	/** @var callable */
-	private $postProcessor;
+
+	/** @var ?string */
+	private $contentLocation = null;
+
 
 	/**
-	 * @param mixed[] $data
+	 * @param mixed[]|JsonSerializable $data
 	 */
-	public function __construct(array $data, int $code = Http\IResponse::S200_OK, ?int $expiration = null)
-	{
+	public function __construct($data, int $code = Http\IResponse::S200_OK, ?int $expiration = null) {
 		$this->data = $data;
 		$this->code = $code;
 		$this->expiration = $expiration;
 	}
 
-	public function send(Http\IRequest $httpRequest, Http\IResponse $httpResponse): void
-	{
+
+	public function send(Http\IRequest $httpRequest, Http\IResponse $httpResponse): void {
 		$httpResponse->setContentType($this->contentType);
 		$httpResponse->setCode($this->code);
 		$httpResponse->setExpiration($this->expiration);
 		$httpResponse->setHeader('Pragma', $this->expiration ? 'cache': 'no-cache');
-
-		$response = Json::encode($this->data);
-		if (is_callable($this->postProcessor)) {
-			$response = call_user_func($this->postProcessor, $response);
+		if ($this->contentLocation) {
+			$httpResponse->setHeader('Content-Location', $this->contentLocation);
 		}
-		echo $response;
+
+		echo Json::encode($this->data);
 	}
 
+
 	/**
-	 * @return mixed[]
+	 * @return mixed[]|JsonSerializable
 	 */
-	public function getData(): array
-	{
+	public function getData() {
 		return $this->data;
 	}
 
+
 	/**
-	 * @param mixed[] $data
+	 * @param mixed[]|JsonSerializable $data
 	 */
-	public function setData(array $data): void
-	{
+	public function setData($data): void {
 		$this->data = $data;
 	}
 
-	public function getCode(): int
-	{
+
+	public function getCode(): int {
 		return $this->code;
 	}
 
-	public function setCode(int $code): void
-	{
+
+	public function setCode(int $code): void {
 		$this->code = $code;
 	}
 
-	public function getContentType(): string
-	{
+
+	public function getContentType(): string {
 		return $this->contentType;
 	}
 
-	public function setContentType(string $contentType): void
-	{
+
+	public function setContentType(string $contentType): void {
 		$this->contentType = $contentType;
 	}
 
-	public function setExpiration(?int $expiration): void
-	{
+
+	public function setExpiration(?int $expiration): void {
 		$this->expiration = $expiration;
 	}
 
-	public function getExpiration(): ?int
-	{
+
+	public function getExpiration(): ?int {
 		return $this->expiration;
 	}
 
-	public function getPostProcessor(): callable
-	{
-		return $this->postProcessor;
-	}
 
-	public function setPostProcessor(callable $postProcessor): void
-	{
-		$this->postProcessor = $postProcessor;
+	public function setContentLocation(string $contentLocation): void {
+		$this->contentLocation = $contentLocation;
 	}
 
 }

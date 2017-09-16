@@ -1,0 +1,6 @@
+services:
+    - App\Facade\Cosmonaut(@orm.dao(App\Entity\Cosmonaut))
+
+    - App\Presenters\CosmonautPresenter(@orm.dao(App\Entity\Cosmonaut), ...)
+
+    router: App\Router\RouterFactory::createRouter

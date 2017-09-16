@@ -1,3 +1,35 @@
+includes:
+    - parameters.neon
+    - services.neon
+
+extensions:
+    console: Kdyby\Console\DI\ConsoleExtension
+    events: Kdyby\Events\DI\EventsExtension
+    annotations: Kdyby\Annotations\DI\AnnotationsExtension
+    orm: Kdyby\Doctrine\DI\OrmExtension
+    migrations: Nettrine\Migrations\DI\MigrationsExtension
+
+decorator:
+    Symfony\Component\Console\Command\Command:
+        tags: [kdyby.console.command]
+    Doctrine\DBAL\Migrations\Tools\Console\Helper\ConfigurationHelper:
+        tags: [kdyby.console.helper]
+
+orm:
+    user: %db.user%
+    password: %db.password%
+    dbname: %db.name%
+    host: %db.host%
+    metadata:
+        App\Entity: %appDir%/Entity
+
+migrations:
+    table: doctrine_migrations
+    column: version
+    directory: %appDir%/Migrations
+    namespace: App\Migrations
+    versionsOrganization: null # null, year, year_and_month
+
 application:
     errorPresenter: Error
     mapping:
@@ -5,8 +37,3 @@ application:
 
 session:
     expiration: 14 days
-
-services:
-    router: App\Router\RouterFactory::createRouter
-
-parameters:

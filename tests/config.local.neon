@@ -1,0 +1,7 @@
+parameters:
+    db:
+        name: cosmonauts_test
+
+orm:
+    metadata:
+        App\Entity: %appDir%/../app/Entity

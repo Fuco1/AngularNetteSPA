@@ -15,7 +15,7 @@ class RouterFactory
 	public static function createRouter(): RouteList
 	{
 		$router = new RouteList;
-		$router[] = new Route('/api/user[/<id>]', 'User:default');
+		$router[] = new Route('/api/cosmonaut[/<id>]', 'Cosmonaut:default');
 		return $router;
 	}
 
