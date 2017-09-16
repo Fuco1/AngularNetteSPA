@@ -71,19 +71,11 @@
 
   <target name="tests-integration">
     <exec
-        executable="rm"
-        logoutput="true"
-        passthru="true"
-        checkreturn="true"
-        >
-      <arg value="-rf"/>
-      <arg path="tests/temp"/>
-    </exec>
-    <exec
         executable="./cmd"
         logoutput="true"
         passthru="true"
         >
+      <arg value="--test"/>
       <arg value="migrations:migrate"/>
       <arg value="--no-interaction"/>
       <arg value="first"/>
@@ -93,14 +85,22 @@
         logoutput="true"
         passthru="true"
         >
+      <arg value="--test"/>
       <arg value="migrations:migrate"/>
       <arg value="--no-interaction"/>
     </exec>
     <exec
-        executable="vendor/bin/tester"
+        executable="docker-compose"
         logoutput="true"
         passthru="true"
         checkreturn="true">
+      <arg value="exec"/>
+      <arg value="-T"/>
+      <arg value="app"/>
+      <arg path="vendor/bin/tester"/>
+      <arg value="--colors"/>
+      <arg value="1"/>
+      <arg value="-C"/>
       <arg path="tests/integration"/>
     </exec>
   </target>

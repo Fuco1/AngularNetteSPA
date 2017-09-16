@@ -5,3 +5,6 @@ parameters:
 orm:
     metadata:
         App\Entity: %appDir%/../app/Entity
+
+migrations:
+    directory: %appDir%/../app/Migrations

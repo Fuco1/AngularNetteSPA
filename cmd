@@ -1,3 +1,8 @@
 #!/bin/bash
 
-docker-compose exec app php www/index.php --ansi "$@"
+if [ "$1" = "--test" ] ; then
+    shift
+    docker-compose exec app php tests/index.php --ansi "$@"
+else
+    docker-compose exec app php tests/index.php --ansi "$@"
+fi

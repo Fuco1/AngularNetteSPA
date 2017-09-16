@@ -14,7 +14,7 @@
 
   <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
     <properties>
-      <property name="rootNamespaces" type="array" value="app => App, tests/unit => Tests\App"/>
+      <property name="rootNamespaces" type="array" value="app => App, tests/unit => Tests\App, tests/integration => IntegrationTests\App"/>
     </properties>
   </rule>
 
