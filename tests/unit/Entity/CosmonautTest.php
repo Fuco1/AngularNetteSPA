@@ -38,6 +38,18 @@ class CosmonautTest extends Tester\TestCase
 		Assert::equal('1999-01-02', $cosmonaut->getDateOfBirth()->format('Y-m-d'));
 	}
 
+
+	public function testSaveCopyOfDateOfBirth(): void {
+		$date = new DateTime('1999-01-02');
+		$cosmonaut = new Entity\Cosmonaut('Jon', 'Snow', $date, 'bastard');
+
+		$date->modify('+1 day');
+		$dateOfBirth = $cosmonaut->getDateOfBirth();
+
+		Assert::equal('1999-01-02', $dateOfBirth->format('Y-m-d'));
+		Assert::equal('1999-01-03', $date->format('Y-m-d'));
+	}
+
 }
 
 (new CosmonautTest)->run();

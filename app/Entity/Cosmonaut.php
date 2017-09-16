@@ -45,7 +45,7 @@ class Cosmonaut extends Identified implements JsonSerializable
 	public function __construct(string $name, string $surname, DateTimeInterface $dateOfBirth, string $superpower) {
 		$this->name = $name;
 		$this->surname = $surname;
-		$this->dateOfBirth = $dateOfBirth;
+		$this->dateOfBirth = new DateTimeImmutable($dateOfBirth->format('Y-m-d'));
 		$this->superpower = $superpower;
 	}
 
