@@ -4,6 +4,10 @@ require __DIR__ . '/../vendor/autoload.php';
 
 Tester\Environment::setup();
 
+function lockDatabase(): void {
+	Tester\Environment::lock('database', __DIR__ . '/temp');
+}
+
 $configurator = new Nette\Configurator;
 $configurator->setDebugMode(false);
 $configurator->setTempDirectory(__DIR__ . '/temp');
