@@ -50,7 +50,7 @@ abstract class BasePresenter implements IPresenter
         if ($method !== 'get') {
             $contentType = $this->httpRequest->getHeader('content-type');
             if ($contentType !== 'application/json') {
-                throw new BadRequestException("Only application/json requests are accepted.");
+                throw new BadRequestException('Only application/json requests are accepted.');
             }
             $body = trim($this->httpRequest->getRawBody());
 			if (!empty($body)) {
