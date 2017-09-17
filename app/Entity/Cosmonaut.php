@@ -10,6 +10,10 @@ use JsonSerializable;
 
 /**
  * @ORM\Entity
+ *
+ * "Immutable" representation of a cosmonaut.  For the purpose of
+ * Doctrine updates we can use the wrapper class MutableCosmonaut to
+ * change the values while preserving id and the object identity.
  */
 class Cosmonaut extends Identified implements JsonSerializable
 {
@@ -18,28 +22,28 @@ class Cosmonaut extends Identified implements JsonSerializable
 	 * @ORM\Column(type = "string")
 	 * @var string
 	 */
-	private $name;
+	protected $name;
 
 
 	/**
 	 * @ORM\Column(type = "string")
 	 * @var string
 	 */
-	private $surname;
+	protected $surname;
 
 
 	/**
 	 * @ORM\Column(type = "date")
 	 * @var DateTimeInterface
 	 */
-	private $dateOfBirth;
+	protected $dateOfBirth;
 
 
 	/**
 	 * @ORM\Column(type = "string")
 	 * @var string
 	 */
-	private $superpower;
+	protected $superpower;
 
 
 	public function __construct(string $name, string $surname, DateTimeInterface $dateOfBirth, string $superpower) {
@@ -67,14 +71,6 @@ class Cosmonaut extends Identified implements JsonSerializable
 
 	public function getSuperpower(): string {
 		return $this->superpower;
-	}
-
-
-	public function updateWith(Cosmonaut $newCosmonaut): void {
-		$this->name = $newCosmonaut->getName();
-		$this->surname = $newCosmonaut->getSurname();
-		$this->dateOfBirth = new DateTimeImmutable($newCosmonaut->getDateOfBirth()->format('Y-m-d'));
-		$this->superpower = $newCosmonaut->getSuperpower();
 	}
 
 

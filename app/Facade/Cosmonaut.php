@@ -55,10 +55,13 @@ class Cosmonaut
 	}
 
 
-	public function updateCosmonaut(Entity\Cosmonaut $oldCosmonaut, Entity\Cosmonaut $newCosmonaut): Entity\Cosmonaut {
+	public function updateCosmonaut(Entity\MutableCosmonaut $oldCosmonaut, Entity\Cosmonaut $newCosmonaut): Entity\Cosmonaut {
 		$oldCosmonaut->updateWith($newCosmonaut);
-		$this->saveCosmonaut($oldCosmonaut);
-		return $oldCosmonaut;
+
+		$cosmonaut = $oldCosmonaut->getCosmonaut();
+		$this->saveCosmonaut($cosmonaut);
+
+		return $cosmonaut;
 	}
 
 }

@@ -81,8 +81,11 @@ class CosmonautTest extends Tester\TestCase
 
 		$newCosmonaut = new Entity\Cosmonaut('John', 'Doe', new DateTime('2000-10-11'), 'dancing');
 
-		$cosmonaut = $this->cosmonautFacade->updateCosmonaut($cosmonaut, $newCosmonaut);
-		Assert::true($this->entityManager->contains($cosmonaut));
+		$mutableCosmonaut = new Entity\MutableCosmonaut($cosmonaut);
+		$updatedCosmonaut = $this->cosmonautFacade->updateCosmonaut($mutableCosmonaut, $newCosmonaut);
+
+		Assert::true($this->entityManager->contains($updatedCosmonaut));
+		Assert::equal($cosmonaut, $updatedCosmonaut);
 		Assert::equal('John', $cosmonaut->getName());
 		Assert::equal('Doe', $cosmonaut->getSurname());
 		Assert::equal('2000-10-11', $cosmonaut->getDateOfBirth()->format('Y-m-d'));

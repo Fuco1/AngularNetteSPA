@@ -2,6 +2,7 @@
 
 namespace App\Presenters;
 
+use App\Entity;
 use App\Facade;
 use App\Responses\JsonResponse;
 use InvalidArgumentException;
@@ -55,7 +56,7 @@ class CosmonautPresenter extends BasePresenter
 
 		$this->cosmonautFacade->deleteCosmonaut($cosmonaut);
 
-		return new JsonResponse("", JsonResponse::HTTP_204_NO_CONTENT);
+		return new JsonResponse([], JsonResponse::HTTP_204_NO_CONTENT);
 	}
 
 
@@ -65,8 +66,8 @@ class CosmonautPresenter extends BasePresenter
 	public function put(Request $request, array $data): JsonResponse {
 		$cosmonautId = (int) $request->getParameter('id');
 
-		$oldCosmonaut = $this->cosmonautRepository->find($cosmonautId);
-		if (!$oldCosmonaut) {
+		$cosmonaut = $this->cosmonautRepository->find($cosmonautId);
+		if (!$cosmonaut) {
 			return $this->sendErrorResponse(sprintf("Cosmonaut identified by '%d' not found.", $cosmonautId), JsonResponse::HTTP_404_NOT_FOUND);
 		}
 
@@ -76,7 +77,8 @@ class CosmonautPresenter extends BasePresenter
 			return $this->sendErrorResponse(sprintf("Validation error: %s", $e->getMessage()), JsonResponse::HTTP_422_UNPROCESSABLE_ENTITY);
 		}
 
-		$cosmonaut = $this->cosmonautFacade->updateCosmonaut($oldCosmonaut, $newCosmonaut);
+		$mutableCosmonaut = new Entity\MutableCosmonaut($cosmonaut);
+		$cosmonaut = $this->cosmonautFacade->updateCosmonaut($mutableCosmonaut, $newCosmonaut);
 
 		$response = new JsonResponse($cosmonaut, JsonResponse::HTTP_202_ACCEPTED);
 		$response->setContentLocation($this->getLinkGenerator()->link('Cosmonaut:default',  [

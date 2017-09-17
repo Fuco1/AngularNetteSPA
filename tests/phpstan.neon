@@ -1,2 +1,7 @@
 parameters:
     bootstrap: %rootDir%/../../../../tests/bootstrap-phpstan.php
+    ignoreErrors:
+        # To achieve the mutability hackery we do not call the parent
+        # co nstructor and instead delegate all activity to the
+        # underlying instance
+        - '#App\\Entity\\MutableCosmonaut::__construct\(\) does not call parent constructor from App\\Entity\\Cosmonaut\.#'

@@ -51,18 +51,6 @@ class CosmonautTest extends Tester\TestCase
 		Assert::equal('1999-01-03', $date->format('Y-m-d'));
 	}
 
-
-	public function testUpdateWithAnotherCosmonaut(): void {
-		$date = new DateTime('1999-01-02');
-		$cosmonaut = new Entity\Cosmonaut('Jon', 'Snow', $date, 'killing whitewalkers');
-		$date2 = new DateTime('1979-01-02');
-		$cosmonaut2 = new Entity\Cosmonaut('Frank', 'Zappa', $date, 'singing');
-
-		$cosmonaut->updateWith($cosmonaut2);
-
-		Assert::equal($cosmonaut2, $cosmonaut);
-	}
-
 }
 
 (new CosmonautTest)->run();
