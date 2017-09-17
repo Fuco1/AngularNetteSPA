@@ -3,10 +3,12 @@
 namespace IntegrationTests\App\Presenters;
 
 use App\Presenters;
+use App\Responses\JsonResponse;
 use Mockery;
 use Nette;
 use Nette\Application\Request;
 use Tester;
+use Tester\Assert;
 
 $container = require_once __DIR__ . '/../../bootstrap.php';
 
@@ -39,7 +41,13 @@ class BasePresenterTest extends Tester\TestCase
 		$httpRequest->shouldReceive('getHeader')->with('content-type')->andReturn('text/html');
 		$this->presenter->httpRequest = $httpRequest;
 
-		$response = $this->presenter->run(new Request('Cosmonaut:default', 'POST'));
+		try {
+			$this->presenter->run(new Request('Cosmonaut:default', 'POST'));
+			Assert::fail('Must throw');
+		} catch (Nette\Application\BadRequestException $e) {
+			Assert::equal(JsonResponse::HTTP_415_UNSUPPORTED_MEDIA_TYPE, $e->getCode());
+			throw $e;
+		}
 	}
 
 
@@ -51,7 +59,13 @@ class BasePresenterTest extends Tester\TestCase
 		$httpRequest->shouldReceive('getHeader')->with('content-type')->andReturn('text/html');
 		$this->presenter->httpRequest = $httpRequest;
 
-		$response = $this->presenter->run(new Request('Cosmonaut:default', 'PUT'));
+		try {
+			$this->presenter->run(new Request('Cosmonaut:default', 'PUT'));
+			Assert::fail('Must throw');
+		} catch (Nette\Application\BadRequestException $e) {
+			Assert::equal(JsonResponse::HTTP_415_UNSUPPORTED_MEDIA_TYPE, $e->getCode());
+			throw $e;
+		}
 	}
 
 
@@ -59,7 +73,33 @@ class BasePresenterTest extends Tester\TestCase
 	 * @throws Nette\Application\BadRequestException Method 'get' not allowed.
 	 */
 	public function testMethodNotAllowed(): void {
-		$this->presenter->run(new Request('Cosmonaut:default', 'GET'));
+		try {
+			$this->presenter->run(new Request('Cosmonaut:default', 'GET'));
+			Assert::fail('Must throw');
+		} catch (Nette\Application\BadRequestException $e) {
+			Assert::equal(JsonResponse::HTTP_405_METHOD_NOT_ALLOWED, $e->getCode());
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @throws Nette\Application\BadRequestException Method 'FOO' not supported.
+	 */
+	public function testMethodNotSupported(): void {
+		$this->presenter = new class() extends Presenters\BasePresenter {
+				public function __construct() {
+					$this->setAllowedMethods(['foo']);
+				}
+			};
+
+		try {
+			$this->presenter->run(new Request('Cosmonaut:default', 'FOO'));
+			Assert::fail('Must throw');
+		} catch (Nette\Application\BadRequestException $e) {
+			Assert::equal(JsonResponse::HTTP_501_NOT_IMPLEMENTED, $e->getCode());
+			throw $e;
+		}
 	}
 
 }

@@ -62,15 +62,15 @@ abstract class BasePresenter implements IPresenter
         $method = $this->getMethod($request);
 
 		if (!in_array($method, array_merge(['options'], $this->allowedMethods))) {
-			throw new BadRequestException(sprintf("Method '%s' not allowed.", $method));
+			throw new BadRequestException(sprintf("Method '%s' not allowed.", $method), JsonResponse::HTTP_405_METHOD_NOT_ALLOWED);
 		}
 
 
 		$data = [];
         if (in_array($method, ['post', 'put'], true)) {
             $contentType = $this->httpRequest->getHeader('content-type');
-            if (strstr($contentType, 'application/json') === false) {
-                throw new BadRequestException('Only application/json requests are accepted.');
+            if (is_null($contentType) || empty($contentType) || strstr($contentType, 'application/json') === false) {
+                throw new BadRequestException('Only application/json requests are accepted.', JsonResponse::HTTP_415_UNSUPPORTED_MEDIA_TYPE);
             }
             $body = trim($this->httpRequest->getRawBody());
 			if (!empty($body)) {
@@ -80,7 +80,7 @@ abstract class BasePresenter implements IPresenter
 
 
         if (!method_exists($this, $method)) {
-            throw new BadRequestException("Method '{$request->getMethod()}' not supported.");
+            throw new BadRequestException("Method '{$request->getMethod()}' not supported.", JsonResponse::HTTP_501_NOT_IMPLEMENTED);
         }
 
         $response = $this->$method($request, $data);
