@@ -21,6 +21,7 @@ class CosmonautTest extends Tester\TestCase
 		$cosmonaut = new Entity\Cosmonaut('Jon', 'Snow', new DateTimeImmutable('1999-01-02'), 'bastard');
 
 		Assert::equal([
+			'id' => null,
 			'name' => 'Jon',
 			'surname' => 'Snow',
 			'dateOfBirth' => '1999-01-02',

@@ -75,6 +75,7 @@ class Cosmonaut extends Identified implements JsonSerializable
 	 */
 	public function jsonSerialize(): array {
 		return [
+			'id' => $this->getId(),
 			'name' => $this->getName(),
 			'surname' => $this->getSurname(),
 			'dateOfBirth' => $this->getDateOfBirth()->format('Y-m-d'),
