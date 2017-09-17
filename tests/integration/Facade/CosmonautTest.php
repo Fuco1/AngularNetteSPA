@@ -4,6 +4,7 @@ namespace IntegrationTests\App\Facade;
 
 use App\Entity;
 use App\Facade;
+use DateTime;
 use Kdyby;
 use Tester;
 use Tester\Assert;
@@ -60,7 +61,32 @@ class CosmonautTest extends Tester\TestCase
 		$cosmonauts = $this->entityManager->getRepository(Entity\Cosmonaut::class)->findAll();
 
 		Assert::count(1, $cosmonauts);
+	}
 
+
+	public function testDeleteCosmonaut(): void {
+		$cosmonaut = new Entity\Cosmonaut('Jon', 'Snow', new DateTime('2000-10-10'), 'singing');
+		$this->entityManager->persist($cosmonaut);
+		$this->entityManager->flush();
+
+		$this->cosmonautFacade->deleteCosmonaut($cosmonaut);
+		Assert::false($this->entityManager->contains($cosmonaut));
+	}
+
+
+	public function testUpdateCosmonaut(): void {
+		$cosmonaut = new Entity\Cosmonaut('Jon', 'Snow', new DateTime('2000-10-10'), 'singing');
+		$this->entityManager->persist($cosmonaut);
+		$this->entityManager->flush();
+
+		$newCosmonaut = new Entity\Cosmonaut('John', 'Doe', new DateTime('2000-10-11'), 'dancing');
+
+		$cosmonaut = $this->cosmonautFacade->updateCosmonaut($cosmonaut, $newCosmonaut);
+		Assert::true($this->entityManager->contains($cosmonaut));
+		Assert::equal('John', $cosmonaut->getName());
+		Assert::equal('Doe', $cosmonaut->getSurname());
+		Assert::equal('2000-10-11', $cosmonaut->getDateOfBirth()->format('Y-m-d'));
+		Assert::equal('dancing', $cosmonaut->getSuperpower());
 	}
 
 }

@@ -47,4 +47,18 @@ class Cosmonaut
 		$em->flush($cosmonaut);
 	}
 
+
+	public function deleteCosmonaut(Entity\Cosmonaut $cosmonaut): void {
+		$em = $this->cosmonautRepository->getEntityManager();
+		$em->remove($cosmonaut);
+		$em->flush($cosmonaut);
+	}
+
+
+	public function updateCosmonaut(Entity\Cosmonaut $oldCosmonaut, Entity\Cosmonaut $newCosmonaut): Entity\Cosmonaut {
+		$oldCosmonaut->updateWith($newCosmonaut);
+		$this->saveCosmonaut($oldCosmonaut);
+		return $oldCosmonaut;
+	}
+
 }
