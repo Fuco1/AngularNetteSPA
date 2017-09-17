@@ -1,1 +1,6 @@
 parameters:
+    db:
+        user: root
+        password: 123
+        name: cosmonauts
+        host: mysql
