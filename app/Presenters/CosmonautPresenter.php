@@ -11,6 +11,8 @@ use Nette\Application\Request;
 class CosmonautPresenter extends BasePresenter
 {
 
+	private const ALLOWED_METHODS = ['get', 'put', 'delete'];
+
 	/**
 	 * @var Facade\Cosmonaut
 	 */
@@ -26,6 +28,8 @@ class CosmonautPresenter extends BasePresenter
 	public function __construct(Kdyby\Doctrine\EntityRepository $cosmonautRepository, Facade\Cosmonaut $cosmonautFacade) {
 		$this->cosmonautRepository = $cosmonautRepository;
 		$this->cosmonautFacade = $cosmonautFacade;
+
+		$this->setAllowedMethods(self::ALLOWED_METHODS);
 	}
 
 
@@ -41,19 +45,40 @@ class CosmonautPresenter extends BasePresenter
 	}
 
 
+	public function delete(Request $request): JsonResponse {
+		$cosmonautId = (int) $request->getParameter('id');
+
+		$cosmonaut = $this->cosmonautRepository->find($cosmonautId);
+		if (!$cosmonaut) {
+			return $this->sendErrorResponse(sprintf("Cosmonaut identified by '%d' not found.", $cosmonautId), JsonResponse::HTTP_404_NOT_FOUND);
+		}
+
+		$this->cosmonautFacade->deleteCosmonaut($cosmonaut);
+
+		return new JsonResponse("", JsonResponse::HTTP_204_NO_CONTENT);
+	}
+
+
 	/**
 	 * @param mixed[] $data
 	 */
-	public function post(Request $request, array $data): JsonResponse {
+	public function put(Request $request, array $data): JsonResponse {
+		$cosmonautId = (int) $request->getParameter('id');
+
+		$oldCosmonaut = $this->cosmonautRepository->find($cosmonautId);
+		if (!$oldCosmonaut) {
+			return $this->sendErrorResponse(sprintf("Cosmonaut identified by '%d' not found.", $cosmonautId), JsonResponse::HTTP_404_NOT_FOUND);
+		}
+
 		try {
-			$cosmonaut = $this->cosmonautFacade->createCosmonaut($data);
+			$newCosmonaut = $this->cosmonautFacade->createCosmonaut($data);
 		} catch (InvalidArgumentException $e) {
 			return $this->sendErrorResponse(sprintf("Validation error: %s", $e->getMessage()), JsonResponse::HTTP_422_UNPROCESSABLE_ENTITY);
 		}
 
-		$this->cosmonautFacade->saveCosmonaut($cosmonaut);
+		$cosmonaut = $this->cosmonautFacade->updateCosmonaut($oldCosmonaut, $newCosmonaut);
 
-		$response = new JsonResponse($cosmonaut, JsonResponse::HTTP_201_CREATED);
+		$response = new JsonResponse($cosmonaut, JsonResponse::HTTP_202_ACCEPTED);
 		$response->setContentLocation($this->getLinkGenerator()->link('Cosmonaut:default',  [
 			'id' => $cosmonaut->getId(),
 		]));

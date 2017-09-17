@@ -88,51 +88,77 @@ class CosmonautPresenterTest extends Tester\TestCase
 
 
 	public function testGetCosmonautNonexistent(): void {
-		$cosmonaut = new Entity\Cosmonaut('Jon', 'Snow', new DateTime('2000-10-10'), 'singing');
-		$this->entityManager->persist($cosmonaut);
-		$this->entityManager->flush();
-
 		$response = $this->presenter->run(new Request('Cosmonaut:default', 'GET', ['id' => 666]));
 
 		Assert::equal(JsonResponse::HTTP_404_NOT_FOUND, $response->getCode());
 	}
 
 
-	/**
-	 * @throws Nette\Application\BadRequestException Only application/json requests are accepted.
-	 */
-	public function testInvalidContentType(): void {
-		$httpRequest = Mockery::mock(Nette\Http\Request::class);
-		$httpRequest->shouldReceive('getHeader')->with('content-type')->andReturn('text/html');
-		$this->presenter->httpRequest = $httpRequest;
+	public function testDeleteCosmonautValid(): void {
+		$cosmonaut = new Entity\Cosmonaut('Jon', 'Snow', new DateTime('2000-10-10'), 'singing');
+		$this->entityManager->persist($cosmonaut);
+		$this->entityManager->flush();
 
-		$response = $this->presenter->run(new Request('Cosmonaut:default', 'POST'));
+		$response = $this->presenter->run(new Request('Cosmonaut:default', 'DELETE', ['id' => $cosmonaut->getId()]));
+
+		Assert::equal(JsonResponse::HTTP_204_NO_CONTENT, $response->getCode());
+		Assert::false($this->entityManager->contains($cosmonaut));
 	}
 
 
-	public function testPostCosmonautValid(): void {
+	public function testDeleteCosmonautNonexistent(): void {
+		$response = $this->presenter->run(new Request('Cosmonaut:default', 'DELETE', ['id' => 666]));
+
+		Assert::equal(JsonResponse::HTTP_404_NOT_FOUND, $response->getCode());
+	}
+
+
+	public function testPutCosmonautValid(): void {
+		$cosmonaut = new Entity\Cosmonaut('Jon', 'Snow', new DateTime('2000-10-10'), 'singing');
+		$this->entityManager->persist($cosmonaut);
+		$this->entityManager->flush();
+
 		$httpRequest = Mockery::mock(Nette\Http\Request::class);
 		$httpRequest->shouldReceive('getRawBody')->andReturn(json_encode([
 			'name' => 'John',
 			'surname' => 'Doe',
-			'dateOfBirth' => '2000-10-10',
+			'dateOfBirth' => '2000-10-11',
 			'superpower' => 'unknown',
 		]));
 		$httpRequest->shouldReceive('getHeader')->with('content-type')->andReturn('application/json');
 		$this->presenter->httpRequest = $httpRequest;
 
-		$response = $this->presenter->run(new Request('Cosmonaut:default', 'POST'));
+		$response = $this->presenter->run(new Request('Cosmonaut:default', 'PUT', [
+			'id' => $cosmonaut->getId(),
+		]));
 
-		Assert::equal(JsonResponse::HTTP_201_CREATED, $response->getCode());
+		Assert::equal(JsonResponse::HTTP_202_ACCEPTED, $response->getCode());
 		Assert::truthy($response->getContentLocation());
 
-		$cosmonaut = $response->getData();
-		Assert::type(Entity\Cosmonaut::class, $cosmonaut);
-		Assert::true($this->entityManager->contains($cosmonaut));
+		$updated = $response->getData();
+		Assert::type(Entity\Cosmonaut::class, $updated);
+		Assert::true($this->entityManager->contains($updated));
+		Assert::equal($cosmonaut, $updated);
 	}
 
 
-	public function testPostCosmonautInValid(): void {
+	public function testPutCosmonautNonexistent(): void {
+		$httpRequest = Mockery::mock(Nette\Http\Request::class);
+		$httpRequest->shouldReceive('getHeader')->with('content-type')->andReturn('application/json');
+		$httpRequest->shouldReceive('getRawBody')->andReturn("");
+		$this->presenter->httpRequest = $httpRequest;
+
+		$response = $this->presenter->run(new Request('Cosmonaut:default', 'PUT', ['id' => 666]));
+
+		Assert::equal(JsonResponse::HTTP_404_NOT_FOUND, $response->getCode());
+	}
+
+
+	public function testPutCosmonautInvalid(): void {
+		$cosmonaut = new Entity\Cosmonaut('Jon', 'Snow', new DateTime('2000-10-10'), 'singing');
+		$this->entityManager->persist($cosmonaut);
+		$this->entityManager->flush();
+
 		$httpRequest = Mockery::mock(Nette\Http\Request::class);
 		$httpRequest->shouldReceive('getRawBody')->andReturn(json_encode([
 			'name' => 'John',
@@ -140,7 +166,9 @@ class CosmonautPresenterTest extends Tester\TestCase
 		$httpRequest->shouldReceive('getHeader')->with('content-type')->andReturn('application/json');
 		$this->presenter->httpRequest = $httpRequest;
 
-		$response = $this->presenter->run(new Request('Cosmonaut:default', 'POST'));
+		$response = $this->presenter->run(new Request('Cosmonaut:default', 'PUT', [
+			'id' => $cosmonaut->getId(),
+		]));
 
 		Assert::equal(JsonResponse::HTTP_422_UNPROCESSABLE_ENTITY, $response->getCode());
 	}
