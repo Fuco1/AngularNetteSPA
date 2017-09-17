@@ -70,6 +70,14 @@ class Cosmonaut extends Identified implements JsonSerializable
 	}
 
 
+	public function updateWith(Cosmonaut $newCosmonaut): void {
+		$this->name = $newCosmonaut->getName();
+		$this->surname = $newCosmonaut->getSurname();
+		$this->dateOfBirth = new DateTimeImmutable($newCosmonaut->getDateOfBirth()->format('Y-m-d'));
+		$this->superpower = $newCosmonaut->getSuperpower();
+	}
+
+
 	/**
 	 * @return mixed[]
 	 */
