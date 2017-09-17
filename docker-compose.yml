@@ -3,7 +3,7 @@ version: '2.1'
 services:
   app:
     build: .
-    image: techfides/assignment
+    image: fuco1/entity-repository
     command: php -S 0.0.0.0:8080 -t www www/index.php
     working_dir: ${PWD}
     ports:
