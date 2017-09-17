@@ -32,5 +32,10 @@
     },
     "autoload": {
         "psr-4": {"App\\": "app/"}
+    },
+    "scripts": {
+        "build-fast": "phing build-fast",
+        "build-slow": "phing build-slow",
+        "style-fix": "phing cs-fix"
     }
 }

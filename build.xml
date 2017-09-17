@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="Cosmonatus" default="check">
+<project name="Repository" default="build-fast">
 
   <target
-      name="check"
+      name="build-fast"
       depends="
                lint,
                cs,
-               tests,
-               phpstan
+               phpstan,
+               tests
+               "
+      />
+
+  <target
+      name="build-slow"
+      depends="
+               build-fast,
+               tests-integration
                "
       />
 
@@ -71,21 +79,31 @@
 
   <target name="tests-integration">
     <exec
-        executable="./cmd"
+        executable="docker-compose"
         logoutput="true"
         passthru="true"
         >
-      <arg value="--test"/>
+      <arg value="exec"/>
+      <arg value="-T"/>
+      <arg value="app"/>
+      <arg value="php"/>
+      <arg path="tests/index.php"/>
+      <arg value="--ansi"/>
       <arg value="migrations:migrate"/>
       <arg value="--no-interaction"/>
       <arg value="first"/>
     </exec>
     <exec
-        executable="./cmd"
+        executable="docker-compose"
         logoutput="true"
         passthru="true"
         >
-      <arg value="--test"/>
+      <arg value="exec"/>
+      <arg value="-T"/>
+      <arg value="app"/>
+      <arg value="php"/>
+      <arg path="tests/index.php"/>
+      <arg value="--ansi"/>
       <arg value="migrations:migrate"/>
       <arg value="--no-interaction"/>
     </exec>
