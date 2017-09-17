@@ -164,6 +164,7 @@ class JsonResponse implements Application\IResponse
 		$httpResponse->setCode($this->code);
 		$httpResponse->setExpiration($this->expiration);
 		$httpResponse->setHeader('Pragma', $this->expiration ? 'cache': 'no-cache');
+		$httpResponse->setHeader('Access-Control-Allow-Origin', '*');
 		if ($this->contentLocation) {
 			$httpResponse->setHeader('Content-Location', $this->contentLocation);
 		}
