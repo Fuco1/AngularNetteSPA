@@ -25,6 +25,12 @@ class NormalizedTest extends Tester\TestCase
 	}
 
 
+	public function testNormalizedIsValidated(): void {
+		$normalized = new Normalizers\Normalized(new Validated(['a' => 'b']));
+		Assert::type(Validated::class, $normalized);
+	}
+
+
 	/**
 	 * @throws RuntimeException This object is immutable.
 	 */

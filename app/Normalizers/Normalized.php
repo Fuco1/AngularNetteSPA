@@ -3,8 +3,6 @@
 namespace App\Normalizers;
 
 use App\Validators;
-use ArrayAccess;
-use RuntimeException;
 
 
 /**
@@ -15,59 +13,14 @@ use RuntimeException;
  * To ensure this works as expected only classes inside
  * App\Normalizers should create instances of this class!
  */
-class Normalized implements ArrayAccess
+class Normalized extends Validators\Validated
 {
-
-	/** @var mixed[] */
-	private $data;
-
 
 	/**
 	 * @param mixed[] $data
 	 */
 	public function __construct(Validators\Validated $data) {
-		$this->data = $data->getData();
-	}
-
-
-	/**
-	 * @return mixed[]
-	 */
-	public function getData(): array {
-		return $this->data;
-	}
-
-
-	/**
-	 * @param mixed $offset
-	 */
-	public function offsetExists($offset): bool {
-		return isset($this->data[$offset]);
-	}
-
-
-	/**
-	 * @param mixed $offset
-	 * @return mixed
-	 */
-	public function offsetGet($offset) {
-		return $this->data[$offset];
-	}
-
-
-	/**
-	 * @param mixed $offset
-	 */
-	public function offsetSet($offset, $value): void {
-		throw new RuntimeException('This object is immutable.');
-	}
-
-
-	/**
-	 * @param mixed $offset
-	 */
-	public function offsetUnset($offset): void {
-		throw new RuntimeException('This object is immutable.');
+		parent::__construct($data->getData());
 	}
 
 }
