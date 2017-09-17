@@ -24,9 +24,9 @@ Run
 make run
 ```
 
-to start the backend and frontend services.  Then visit `http://localhost:8912`.  That's it!
+to start the backend and frontend services.  Then visit http://localhost:8912.  That's it!
 
-You can reach the backend at `http://localhost:8080/api`.
+You can reach the backend at http://localhost:8080/api.
 
 ## Docker helper
 
