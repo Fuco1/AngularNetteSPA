@@ -82,9 +82,9 @@ delete entity => DELETE /entities/:id
 
 Special care is taken to make sure data inside the system stay consistent.  We ensure, using the PHPs type system, that invalid data from the user never reach the inner logic of the system.
 
-This is achieved by first screening the input arrays through validatiors and then wrapping them in a `Validated` class instance.  Later stages of the system, which require validated data, accept only this type instead of plain arrays.  This way we ensure on the type level that unvalidated data cannot reach the model layer.
+This is achieved by first screening the input arrays through validators and then wrapping them in a `Validated` class instance.  Later stages of the system, which require validated data, accept only this type instead of plain arrays.  This way we ensure on the type level that unvalidated data cannot reach the model layer.
 
-Similarly, since the REST api uses JSON objects as the transfer format, we use normalizers to translate the plain strings into PHP objects (such as the string `2000-10-20` into a `DateTimeImmutable` instance).  Normalizers only accept `Validated` objects so that they are guaranteed to never fail because they always recieve good data.  Normalizers emit instances of `Normalized` class so that we can further ensure that only normalized data are fed into entity creation methods.
+Similarly, since the REST api uses JSON objects as the transfer format, we use normalizers to translate the plain strings into PHP objects (such as the string `2000-10-20` into a `DateTimeImmutable` instance).  Normalizers only accept `Validated` objects so that they are guaranteed to never fail because they always receive good data.  Normalizers emit instances of `Normalized` class so that we can further ensure that only normalized data are fed into entity creation methods.
 
 Both the `Validated` and `Normalized` classes implement `ArrayAccess` for ease of use.  They are made immutable to further ensure that the data is never changed inside them once created.
 
@@ -92,7 +92,7 @@ This approach requires a little bit of manual boxing and unboxing of data but is
 
 ## Immutable entities
 
-Entities are kept immutable as far as possible.  This ensures that once created they stey valid for the entire duration of the script execution and never get corrupted.  This guarantee makes it easier for the programmer to argue about the state of the system as there is never any doubt whether the entity is in a correct state or not.
+Entities are kept immutable as far as possible.  This ensures that once created they stay valid for the entire duration of the script execution and never get corrupted.  This guarantee makes it easier for the programmer to argue about the state of the system as there is never any doubt whether the entity is in a correct state or not.
 
 Due to the fact that Doctrine can not use immutable entities (the entity manager uses inherently mutable methods to update entities), special mutable wrappers are used to mutate the entities.
 
@@ -105,7 +105,7 @@ $immutableCosmonaut = new Cosmonaut('name', 'surname', ...);
 $mutableCosmonaut = new MutableCosmonaut($immutableCosmonaut);
 ```
 
-Mutable entites allow changes to the data of the underlying entity (via class inheritance) through curated sets of methods (so not any updates are possible, only those which are necessary for the application).
+Mutable entities allow changes to the data of the underlying entity (via class inheritance) through curated sets of methods (so not any updates are possible, only those which are necessary for the application).
 
 The functions which wish to mutate entities must then explicitly make this apparent through the type of the input argument.  Of course, a mutable entity can be passed anywhere an immutable one can be passed because we are sure nothing inside the method would change it (it has no access to the mutators... though in PHP this is not enforced by the runtime itself).
 
