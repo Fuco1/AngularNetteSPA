@@ -3,6 +3,7 @@
 namespace App\Presenters;
 
 use App\Responses\JsonResponse;
+use App\Responses\OptionsResponse;
 use Nette;
 use Nette\Application\BadRequestException;
 use Nette\Application\IPresenter;
@@ -30,6 +31,12 @@ abstract class BasePresenter implements IPresenter
 	public $linkGenerator;
 
 
+	/**
+	 * @var string[]
+	 */
+	private $allowedMethods = [];
+
+
     public function getHttpRequest(): Http\Request {
         return $this->httpRequest;
     }
@@ -40,16 +47,29 @@ abstract class BasePresenter implements IPresenter
 	}
 
 
+	/**
+	 * @param string[] $allowedMethods
+	 */
+	protected function setAllowedMethods(array $allowedMethods): void {
+		$this->allowedMethods = $allowedMethods;
+	}
+
+
     /**
      * @throws BadRequestException
      */
     public function run(Request $request): IResponse {
-        $method = strtolower($request->getMethod());
+        $method = $this->getMethod($request);
+
+		if (!in_array($method, array_merge(['options'], $this->allowedMethods))) {
+			throw new BadRequestException(sprintf("Method '%s' not allowed.", $method));
+		}
+
 
 		$data = [];
-        if ($method !== 'get') {
+        if (in_array($method, ['post', 'put'], true)) {
             $contentType = $this->httpRequest->getHeader('content-type');
-            if ($contentType !== 'application/json') {
+            if (strstr($contentType, 'application/json') === false) {
                 throw new BadRequestException('Only application/json requests are accepted.');
             }
             $body = trim($this->httpRequest->getRawBody());
@@ -69,6 +89,16 @@ abstract class BasePresenter implements IPresenter
         }
         return $response;
     }
+
+
+	protected function options(Request $request): IResponse {
+		return new OptionsResponse();
+	}
+
+
+	protected function getMethod(Request $request): string {
+		return strtolower($request->getMethod());
+	}
 
 
 	protected function sendErrorResponse(string $message, int $code): JsonResponse {
