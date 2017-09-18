@@ -62,14 +62,10 @@
 
   <target name="tests">
     <exec
-        executable="docker-compose"
+        executable="vendor/bin/tester"
         logoutput="true"
         passthru="true"
         checkreturn="true">
-      <arg value="exec"/>
-      <arg value="-T"/>
-      <arg value="app"/>
-      <arg path="vendor/bin/tester"/>
       <arg value="--colors"/>
       <arg value="1"/>
       <arg value="-C"/>
@@ -79,14 +75,10 @@
 
   <target name="tests-integration">
     <exec
-        executable="docker-compose"
+        executable="php"
         logoutput="true"
         passthru="true"
         >
-      <arg value="exec"/>
-      <arg value="-T"/>
-      <arg value="app"/>
-      <arg value="php"/>
       <arg path="tests/index.php"/>
       <arg value="--ansi"/>
       <arg value="migrations:migrate"/>
@@ -94,28 +86,20 @@
       <arg value="first"/>
     </exec>
     <exec
-        executable="docker-compose"
+        executable="php"
         logoutput="true"
         passthru="true"
         >
-      <arg value="exec"/>
-      <arg value="-T"/>
-      <arg value="app"/>
-      <arg value="php"/>
       <arg path="tests/index.php"/>
       <arg value="--ansi"/>
       <arg value="migrations:migrate"/>
       <arg value="--no-interaction"/>
     </exec>
     <exec
-        executable="docker-compose"
+        executable="vendor/bin/tester"
         logoutput="true"
         passthru="true"
         checkreturn="true">
-      <arg value="exec"/>
-      <arg value="-T"/>
-      <arg value="app"/>
-      <arg path="vendor/bin/tester"/>
       <arg value="--colors"/>
       <arg value="1"/>
       <arg value="-C"/>

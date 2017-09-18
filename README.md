@@ -53,25 +53,19 @@ The entire build consists of five stages:
 To run the fast build (no integration tests), use
 
 ``` shell
-composer build-fast
+make test
 ```
 
 To run the complete build with integration tests, use
 
 ``` shell
-composer build-slow
-```
-
-Make sure that the docker stack is up before running these commands.  To run the integration tests you will need to create a test database first:
-
-``` shell
-docker-compose exec -T mysql mysql -uroot -p123 -e "create database cosmonauts_test;"
+make test-slow
 ```
 
 To fix auto-fixable style errors we can run:
 
 ``` shell
-composer style-fix
+make cs-fix
 ```
 
 # Backend application architecture
