@@ -1,4 +1,4 @@
-# Entity Repository SPA + REST Server
+# Entity Repository SPA + REST Server [![Build Status](https://semaphoreci.com/api/v1/fuco/angularnettespa/branches/master/badge.svg)](https://semaphoreci.com/fuco/angularnettespa)
 
 This project is a showcase of a simple Entity Repository (CRUD) [SPA](https://en.wikipedia.org/wiki/Single-page_application) using [Angular](https://angularjs.org/) and [ng-admin](https://github.com/marmelab/ng-admin) backed by REST service written in [Nette Framework](https://nette.org/en/) using [Doctrine](http://www.doctrine-project.org/) for storage.
 
