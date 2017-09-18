@@ -1,5 +1,8 @@
 version: '2.1'
 
+volumes:
+  dbdata: {}
+
 services:
   app:
     build: .
@@ -18,3 +21,5 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD
       - MYSQL_DATABASE
+    volumes:
+      - dbdata:/var/lib/mysql
