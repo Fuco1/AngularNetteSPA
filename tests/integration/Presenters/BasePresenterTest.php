@@ -102,6 +102,26 @@ class BasePresenterTest extends Tester\TestCase
 		}
 	}
 
+
+
+	/**
+	 * @throws Nette\Application\BadRequestException Malformed body.
+	 */
+	public function testMalformedBody(): void {
+		$httpRequest = Mockery::mock(Nette\Http\Request::class);
+		$httpRequest->shouldReceive('getHeader')->with('content-type')->andReturn('application/json');
+		$httpRequest->shouldReceive('getRawBody')->andReturn('{"foo":"bar"');
+		$this->presenter->httpRequest = $httpRequest;
+
+		try {
+			$this->presenter->run(new Request('Cosmonaut:default', 'POST'));
+			Assert::fail('Must throw');
+		} catch (Nette\Application\BadRequestException $e) {
+			Assert::equal(JsonResponse::HTTP_400_BAD_REQUEST, $e->getCode());
+			throw $e;
+		}
+	}
+
 }
 
 (new BasePresenterTest())->run();

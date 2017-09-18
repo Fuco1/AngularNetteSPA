@@ -74,7 +74,11 @@ abstract class BasePresenter implements IPresenter
             }
             $body = trim($this->httpRequest->getRawBody());
 			if (!empty($body)) {
-				$data = Json::decode($body, Json::FORCE_ARRAY);
+				try {
+					$data = Json::decode($body, Json::FORCE_ARRAY);
+				} catch (Nette\Utils\JsonException $e) {
+					throw new BadRequestException('Malformed body.', JsonResponse::HTTP_400_BAD_REQUEST);
+				}
 			}
         }
 
