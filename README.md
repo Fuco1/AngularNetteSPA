@@ -18,7 +18,13 @@ make deps
 
 to grab all the dependencies.
 
-Run
+The first time docker stack is brought up a database volume will be created with a clean database.  You will need to execute the migration scripts to make it usable:
+
+``` shell
+./cmd migrations:migrate
+```
+
+Then run
 
 ``` shell
 make run
@@ -56,7 +62,11 @@ To run the complete build with integration tests, use
 composer build-slow
 ```
 
-Make sure that the docker stack is up before running these commands.
+Make sure that the docker stack is up before running these commands.  To run the integration tests you will need to create a test database first:
+
+``` shell
+docker-compose exec -T mysql mysql -uroot -p123 -e "create database cosmonauts_test;"
+```
 
 To fix auto-fixable style errors we can run:
 
